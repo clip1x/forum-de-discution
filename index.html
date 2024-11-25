@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum avec User et Admin</title>
+    <style>
+        /* Style général */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6') no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
+        }
+
+        .container {
+            width: 80%;
+            margin: 50px auto;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #444;
+        }
+
+        .form-container, .message-box {
+            margin: 20px 0;
+        }
+
+        /* Champ d'entrée avec cadre rose */
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #ff69b4; /* Rose */
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        input[type="submit"] {
+            background-color: #ff69b4;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #ff1493; /* Rose plus foncé */
+        }
+
+        /* Messages stylés */
+        .message {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .user {
+            background-color: #e6f7ff;
+            border: 1px solid #b3d9ff;
+        }
+
+        .admin {
+            background-color: #ffe4e1;
+            border: 1px solid #ff9999;
+        }
+
+        /* Alignement et bordures */
+        .message-box {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Forum de discussion</h1>
+
+        <!-- Formulaire de connexion -->
+        <div class="form-container" id="login-form">
+            <h2>Connexion</h2>
+            <form id="login" onsubmit="return handleLogin(event)">
+                <label for="username">Nom d'utilisateur :</label><br>
+                <input type="text" id="username" name="username" required><br><br>
+                <label for="password">Mot de passe :</label><br>
+                <input type="password" id="password" name="password" required><br><br>
+                <input type="submit" value="Se connecter">
+            </form>
+        </div>
+
+        <!-- Interface utilisateur -->
+        <div id="user-content" style="display:none;">
+            <h2>Publier un message</h2>
+            <form id="post-form" onsubmit="return postMessage(event)">
+                <label for="message">Message :</label><br>
+                <input type="text" id="message" name="message" required><br><br>
+                <input type="submit" value="Envoyer">
+            </form>
+
+            <h2>Messages reçus :</h2>
+            <div class="message-box" id="messages">
+                <!-- Les messages seront affichés ici -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let isAdmin = false;
+
+        // Fonction de connexion
+        function handleLogin(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Vérification des identifiants
+            if (username === 'User' && password === 'User') {
+                currentUser = username;
+                isAdmin = false;
+                alert('Connexion réussie en tant que User!');
+            } else if (username === 'Admin' && password === 'Admin') {
+                currentUser = username;
+                isAdmin = true;
+                alert('Connexion réussie en tant qu’Admin!');
+            } else {
+                alert('Identifiants incorrects!');
+                return;
+            }
+
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('user-content').style.display = 'block';
+        }
+
+        // Fonction pour poster un message
+        function postMessage(event) {
+            event.preventDefault();
+
+            const message = document.getElementById('message').value;
+
+            // Création du message
+            const messageBox = document.createElement('div');
+            messageBox.classList.add('message', isAdmin ? 'admin' : 'user');
+            messageBox.innerHTML = `<strong>${currentUser} :</strong> ${message}`;
+
+            // Ajout du message à la boîte
+            document.getElementById('messages').appendChild(messageBox);
+
+            // Réinitialiser le champ message
+            document.getElementById('message').value = '';
+        }
+    </script>
+
+</body>
+</html>
